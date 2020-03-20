@@ -1,4 +1,4 @@
-# Sobre
+# Gustavo Antão
 
 Natural de Marília, interior de SP, iniciei minha carreira em tecnologia em 1998 em um provedor de Internet atuando como suporte técnico. O interesse pela área foi tamanho que em 8 meses de trabalho eu já me interessava por Linux, Networking e desenvolvimento.
 
