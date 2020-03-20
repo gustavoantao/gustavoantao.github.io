@@ -1,5 +1,7 @@
 # Gustavo Antão
 
+![Gustavo](https://gustavoantao.github.io/assets/gustavo.jpg)
+
 Natural de Marília, interior de SP, iniciei minha carreira em tecnologia em 1998 em um provedor de Internet atuando como suporte técnico. O interesse pela área foi tamanho que em 8 meses de trabalho eu já me interessava por Linux, Networking e desenvolvimento.
 
 Após saír do provedor, trabalhei em uma consultoria que era representante oficial do Conectiva Linux e durante dois anos consecutivos obtive a Certificação Avançada Conectiva Linux (RIP, sdds :-D), pois era necessário para ministrar os treinamentos oficiais.
