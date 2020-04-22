@@ -1,8 +1,0 @@
-site_name: "Gustavo Antão Website"
-markdown_extensions:
-  - attr_list
-theme: 
-  name: material
-  language: pt
-  palette:
-    primary: "blue grey"
