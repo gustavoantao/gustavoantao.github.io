@@ -359,39 +359,53 @@ Agora, sem mais delongas vamos ao que interessa</p>
 </ul>
 <p>Além dessas extensões deixei a imagem preparada com o composer já instalado para o gerenciamento de dependências da aplicação. Vejamos o Dockerfile dessa imagem:</p>
 <pre><code>FROM php:7.3-fpm
+
 RUN apt-get update &amp;&amp; apt-get upgrade
+
 # PHP MBSTRING
 RUN docker-php-ext-install mbstring
+
 # PHP-ZIP
 RUN apt-get install zlib1g-dev libzip-dev -y
 RUN docker-php-ext-install zip
+
 # PHP-INTL
 RUN apt-get install icu-devtools libicu-dev
 RUN docker-php-ext-configure intl &amp;&amp; docker-php-ext-install intl
+
 # PHP-GD
 RUN apt-get install libpng-dev -y
 RUN docker-php-ext-configure gd &amp;&amp; docker-php-ext-install gd
+
 # PHP-IMAP
 RUN apt-get install libc-client-dev libkrb5-dev -y
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl &amp;&amp; docker-php-ext-install imap
+
 # PHP-XML
 RUN apt-get install libxml2-dev
 RUN docker-php-ext-configure xml &amp;&amp; docker-php-ext-install xml
+
 # PHP-MYSQLi
 RUN docker-php-ext-configure mysqli &amp;&amp; docker-php-ext-install mysqli
+
 # PHP-JSON
 RUN docker-php-ext-configure json &amp;&amp; docker-php-ext-install json
+
 # PHP-BCMATH
 RUN docker-php-ext-configure bcmath &amp;&amp; docker-php-ext-install bcmath
+
 # PHP-BZ2
 RUN apt-get install libbz2-dev -y
 RUN docker-php-ext-configure bz2 &amp;&amp; docker-php-ext-install bz2
+
 # PHP-PDO
 RUN docker-php-ext-configure pdo &amp;&amp; docker-php-ext-install pdo
 RUN docker-php-ext-configure pdo_mysql &amp;&amp; docker-php-ext-install pdo_mysql
+
 # PHP-LDAP
 RUN apt-get install libldap2-dev
 RUN docker-php-ext-configure ldap &amp;&amp; docker-php-ext-install ldap
+
 # Instalando o composer
 RUN php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot; &amp;&amp; \
 php composer-setup.php &amp;&amp; \
@@ -408,38 +422,52 @@ mv composer.phar /usr/local/bin/composer &amp;&amp; \
 <p><img alt="Ext Debian" src="https://gustavoantao.github.io/assets/ext_debian.png" /></p>
 <p>São 126MB à mais na imagem oficial Debian após a adição das extensões, qual será o resultado dessas adições na imagem alpine? O Dockerfile Alpine ficou assim:</p>
 <pre><code>FROM php:7.3-fpm-alpine
+
 RUN apk add --update php libstdc++
+
 # PHP MBSTRING
 RUN docker-php-ext-install mbstring
+
 # PHP-ZIP
 RUN apk add --update zlib-dev libzip-dev
 RUN docker-php-ext-install zip
+
 # PHP-INTL
 RUN apk add --update icu-dev php7-intl
 RUN docker-php-ext-configure intl &amp;&amp; docker-php-ext-install intl
+
 # PHP-GD
 RUN apk add --update libgd libpng-dev
 RUN docker-php-ext-configure gd &amp;&amp; docker-php-ext-install gd
+
 # PHP-IMAP
 RUN apk add --update imap-dev
 RUN docker-php-ext-configure imap &amp;&amp; docker-php-ext-install imap
+
 # PHP-XML
 RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing libxml++-dev
 RUN docker-php-ext-configure xml &amp;&amp; docker-php-ext-install xml
+
 # PHP-MYSQLi
 RUN docker-php-ext-configure mysqli &amp;&amp; docker-php-ext-install mysqli
+
 # PHP-JSON
 RUN docker-php-ext-configure json &amp;&amp; docker-php-ext-install json
+
 # PHP-BCMATH
 RUN docker-php-ext-configure bcmath &amp;&amp; docker-php-ext-install bcmath
+
 # PHP-BZ2
 RUN docker-php-ext-configure bz2 &amp;&amp; docker-php-ext-install bz2
+
 # PHP-PDO
 RUN docker-php-ext-configure pdo &amp;&amp; docker-php-ext-install pdo
 RUN docker-php-ext-configure pdo_mysql &amp;&amp; docker-php-ext-install pdo_mysql
+
 # PHP-LDAP
 RUN apk add --update openldap-dev
 RUN docker-php-ext-configure ldap &amp;&amp; docker-php-ext-install ldap
+
 # Instalando o composer
 RUN php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot; &amp;&amp; \
 php composer-setup.php &amp;&amp; \
@@ -456,53 +484,72 @@ mv composer.phar /usr/local/bin/composer &amp;&amp; \
 <p>Mas o que cargas d’água vem a ser esse tal padrão?</p>
 <p>Bem, ao realizarmos as instalações das extensões (ou a compilação para o caso de linguagens compiladas) o sistema baixa diversas bibliotecas e dependências que somente serão utilizadas durante a instalação, inflando a imagem com arquivos que serão desnecessários para o funcionamento da aplicação. O Docker oferece um recurso chamado de multi-stage build, que nos permite fazer toda a geração de dependências em uma imagem temporária e em seguida copiar apenas os arquivos que interessam para a imagem final, tornando-a muito menor. Este é o <strong>Builder Pattern</strong>.</p>
 <p><strong>Mas como fazemos isso?</strong></p>
-<p>Um Dokerfile normalmente possui uma instrução FROM que determina qual será a imagem base utilizada seguida das outras instruções para construção da imagem (COPY, RUN, CMD, etc).</p>
+<p>Um Dockerfile normalmente possui uma instrução FROM que determina qual será a imagem base utilizada seguida das outras instruções para construção da imagem (COPY, RUN, CMD, etc).</p>
 <p>No caso do Builder Pattern utiliza-se um ou mais comandos FROM pra gerar as dependências que posteriormente serão copiadas para a imagem final.</p>
 <p>Veja o exemplo:</p>
 <pre><code>###############################################################################
 # Imagem PHP-7.3 otimizada para uso no cluster
 # Multi-stage build (builder pattern)
 # Primeiro realiza o build das extensões necessárias
+
 FROM php:7.3-fpm-alpine AS extensions_source
+
 ENV EXT_DIR=/usr/src/php/ext
 RUN mkdir -p ${EXT_DIR}
+
 RUN apk add --update php libstdc++
+
 # PHP MBSTRING
 RUN docker-php-ext-install mbstring
+
 # PHP-ZIP
 RUN apk add --update zlib-dev libzip-dev
 RUN docker-php-ext-install zip
+
 # PHP-INTL
 RUN apk add --update icu-dev php7-intl
 RUN docker-php-ext-configure intl &amp;&amp; docker-php-ext-install intl
+
 # PHP-GD
 RUN apk add --update libgd libpng-dev
 RUN docker-php-ext-configure gd &amp;&amp; docker-php-ext-install gd
+
 # PHP-IMAP
 RUN apk add --update imap-dev
 RUN docker-php-ext-configure imap &amp;&amp; docker-php-ext-install imap
+
 # PHP-XML
 RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing libxml++-dev
 RUN docker-php-ext-configure xml &amp;&amp; docker-php-ext-install xml
+
 # PHP-MYSQLi
 RUN docker-php-ext-configure mysqli &amp;&amp; docker-php-ext-install mysqli
+
 # PHP-JSON
 RUN docker-php-ext-configure json &amp;&amp; docker-php-ext-install json
+
 # PHP-BCMATH
 RUN docker-php-ext-configure bcmath &amp;&amp; docker-php-ext-install bcmath
+
 # PHP-BZ2
 RUN docker-php-ext-configure bz2 &amp;&amp; docker-php-ext-install bz2
+
 # PHP-PDO
 RUN docker-php-ext-configure pdo &amp;&amp; docker-php-ext-install pdo
 RUN docker-php-ext-configure pdo_mysql &amp;&amp; docker-php-ext-install pdo_mysql
+
 # PHP-LDAP
 RUN apk add --update openldap-dev
 RUN docker-php-ext-configure ldap &amp;&amp; docker-php-ext-install ldap
+
 # Estágio 2
 # Faz o build da imagem limpa, apenas copiando os arquivos necessários da imagem temporária
+
 FROM php:7.3-fpm-alpine
+
 ENV EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20180731/
 ENV LIB_DIR=/usr/lib
+
 COPY --from=extensions_source \
 ${EXT_DIR}/mbstring.so \
 ${EXT_DIR}/zip.so \
@@ -517,6 +564,7 @@ ${EXT_DIR}/bz2.so \
 ${EXT_DIR}/pdo.so \
 ${EXT_DIR}/pdo_mysql.so \
 ${EXT_DIR}/ldap.so ${EXT_DIR}/
+
 RUN ln -s ${LIB_DIR}/libzip.so ${LIB_DIR}/libzip.so.5 \
 &amp;&amp; ln -s ${LIB_DIR}/libcrypto.so.1.1 ${LIB_DIR}/libcrypto.so \
 &amp;&amp; ln -s ${LIB_DIR}/libssl.so.1.1 ${LIB_DIR}/libssl.so \
@@ -531,6 +579,7 @@ RUN ln -s ${LIB_DIR}/libzip.so ${LIB_DIR}/libzip.so.5 \
 &amp;&amp; ln -s ${LIB_DIR}/libpng.so ${LIB_DIR}/libpng16.so \
 &amp;&amp; ln -s ${LIB_DIR}/libpng.so ${LIB_DIR}/libpng16.so.16 \
 &amp;&amp; ln -s ${LIB_DIR}/libc-client.so ${LIB_DIR}/libc-client.so.1
+
 COPY --from=extensions_source \
 ${LIB_DIR}/libzip.so \
 ${LIB_DIR}/../../lib/libcrypto.so.1.1 \
@@ -551,16 +600,20 @@ ${LIB_DIR}/libldap_r-2.4.so.2 \
 ${LIB_DIR}/libldap_r.so \
 ${LIB_DIR}/liblber.so \
 ${LIB_DIR}/libsasl2.so ${LIB_DIR}/
+
 RUN docker-php-ext-enable zip mbstring intl gd imap xml mysqli json bcmath \
 bz2 pdo pdo_mysql ldap
+
 # Refaço a cópia pois o comando docker-php-ext-enable faz purge de algumas libs
 COPY --from=extensions_source ${LIB_DIR}/libstdc* ${LIB_DIR}/libgcc_s.so.1 ${LIB_DIR}/
+
 # Instalando o composer
 RUN php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot; &amp;&amp; \
 php composer-setup.php &amp;&amp; \
 php -r &quot;unlink('composer-setup.php');&quot; &amp;&amp; \
 mv composer.phar /usr/local/bin/composer &amp;&amp; \
 /usr/local/bin/composer global require hirak/prestissimo
+
 # Limpando a imagem
 RUN rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/local/lib/php/doc/*
 </code></pre>
@@ -572,10 +625,18 @@ Adicionalmente, eu adiciono ao final do arquivo um comando para excluir arquivos
 <p>A imagem gerada utilizando o Builder Pattern ficou com 156MB.
 São 148MB a menos que a imagem Alpine e 368MB de diferença para a imagem Debian. Uma redução de 70% no tamanho original da imagem Debian com as extensões.</p>
 <h2 id="conclusao">Conclusão</h2>
-<p>Vimos que:
-1. Com o simples fato de optarmos pela distro Alpine Linux na hora de construir nossos containers podemos criar imagens muito mais enxutas;
-2. Que com um pouquinho de trabalho, usando o Builder Pattern é possível otimizar ainda mais estas imagens;
-3. Quando estamos falando de imagens de container para o Kubernetes, tamanho é sim importante <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M117.1 384.1c-25.8 3.7-84 13.7-100.9 30.6-21.9 21.9-21.5 57.9.9 80.3s58.3 22.8 80.3.9C114.3 479 124.3 420.8 128 395c.8-6.4-4.6-11.8-10.9-10.9zm-41.2-41.7C40.3 268 53 176.1 114.6 114.6 152.4 76.8 202.6 56 256 56c36.2 0 70.8 9.8 101.2 27.7 3.8-20.3 8-36.1 12-48.3C333.8 17.2 294.9 8 256 8 192.5 8 129.1 32.2 80.6 80.6c-74.1 74.1-91.3 183.4-52 274 12.2-4.1 27.7-8.3 47.3-12.2zm352.3-187.6c45 76.6 34.9 176.9-30.8 242.6-37.8 37.8-88 58.6-141.4 58.6-30.5 0-59.8-7-86.4-19.8-3.9 19.5-8 35-12.2 47.2 31.4 13.6 65 20.6 98.7 20.6 63.5 0 126.9-24.2 175.4-72.6 78.1-78.1 93.1-195.4 45.2-288.6-12.3 4-28.2 8.1-48.5 12zm-33.3-26.9c25.8-3.7 84-13.7 100.9-30.6 21.9-21.9 21.5-57.9-.9-80.3s-58.3-22.8-80.3-.9C397.7 33 387.7 91.2 384 117c-.8 6.4 4.6 11.8 10.9 10.9zm-187 108.3c-3-3-7.2-4.2-11.4-3.2L106 255.7c-5.7 1.4-9.5 6.7-9.1 12.6.5 5.8 5.1 10.5 10.9 11l52.3 4.8 4.8 52.3c.5 5.8 5.2 10.4 11 10.9h.9c5.5 0 10.3-3.7 11.7-9.1l22.6-90.5c1-4.2-.2-8.5-3.2-11.5zm39.7-25.1l90.5-22.6c5.7-1.4 9.5-6.7 9.1-12.6-.5-5.8-5.1-10.5-10.9-11l-52.3-4.8-4.8-52.3c-.5-5.8-5.2-10.4-11-10.9-5.6-.1-11.2 3.4-12.6 9.1L233 196.5c-1 4.1.2 8.4 3.2 11.4 5 5 11.3 3.2 11.4 3.2zm52 88.5c-29.1 29.1-59.7 52.9-83.9 65.4-9.2 4.8-10 17.5-1.7 23.4 38.9 27.7 107 6.2 143.7-30.6S416 253 388.3 214.1c-5.8-8.2-18.5-7.6-23.4 1.7-12.3 24.2-36.2 54.7-65.3 83.8z"/></svg></span>.</p>
+<p>Vimos que:</p>
+<ol>
+<li>
+<p>Com o simples fato de optarmos pela distro Alpine Linux na hora de construir nossos containers podemos criar imagens muito mais enxutas;</p>
+</li>
+<li>
+<p>Que com um pouquinho de trabalho, usando o Builder Pattern é possível otimizar ainda mais estas imagens;</p>
+</li>
+<li>
+<p>Quando estamos falando de imagens de container para o Kubernetes, tamanho é sim importante <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M117.1 384.1c-25.8 3.7-84 13.7-100.9 30.6-21.9 21.9-21.5 57.9.9 80.3s58.3 22.8 80.3.9C114.3 479 124.3 420.8 128 395c.8-6.4-4.6-11.8-10.9-10.9zm-41.2-41.7C40.3 268 53 176.1 114.6 114.6 152.4 76.8 202.6 56 256 56c36.2 0 70.8 9.8 101.2 27.7 3.8-20.3 8-36.1 12-48.3C333.8 17.2 294.9 8 256 8 192.5 8 129.1 32.2 80.6 80.6c-74.1 74.1-91.3 183.4-52 274 12.2-4.1 27.7-8.3 47.3-12.2zm352.3-187.6c45 76.6 34.9 176.9-30.8 242.6-37.8 37.8-88 58.6-141.4 58.6-30.5 0-59.8-7-86.4-19.8-3.9 19.5-8 35-12.2 47.2 31.4 13.6 65 20.6 98.7 20.6 63.5 0 126.9-24.2 175.4-72.6 78.1-78.1 93.1-195.4 45.2-288.6-12.3 4-28.2 8.1-48.5 12zm-33.3-26.9c25.8-3.7 84-13.7 100.9-30.6 21.9-21.9 21.5-57.9-.9-80.3s-58.3-22.8-80.3-.9C397.7 33 387.7 91.2 384 117c-.8 6.4 4.6 11.8 10.9 10.9zm-187 108.3c-3-3-7.2-4.2-11.4-3.2L106 255.7c-5.7 1.4-9.5 6.7-9.1 12.6.5 5.8 5.1 10.5 10.9 11l52.3 4.8 4.8 52.3c.5 5.8 5.2 10.4 11 10.9h.9c5.5 0 10.3-3.7 11.7-9.1l22.6-90.5c1-4.2-.2-8.5-3.2-11.5zm39.7-25.1l90.5-22.6c5.7-1.4 9.5-6.7 9.1-12.6-.5-5.8-5.1-10.5-10.9-11l-52.3-4.8-4.8-52.3c-.5-5.8-5.2-10.4-11-10.9-5.6-.1-11.2 3.4-12.6 9.1L233 196.5c-1 4.1.2 8.4 3.2 11.4 5 5 11.3 3.2 11.4 3.2zm52 88.5c-29.1 29.1-59.7 52.9-83.9 65.4-9.2 4.8-10 17.5-1.7 23.4 38.9 27.7 107 6.2 143.7-30.6S416 253 388.3 214.1c-5.8-8.2-18.5-7.6-23.4 1.7-12.3 24.2-36.2 54.7-65.3 83.8z"/></svg></span>.</p>
+</li>
+</ol>
 <p>No próximo post, entrarei no mundo do Kubernetes propriamente dito criando os arquivos de manifesto para o deploy de uma app PHP no K8s.</p>
 <p>Até lá!</p>
                 
@@ -610,7 +671,7 @@ São 148MB a menos que a imagem Alpine e 368MB de diferença para a imagem Debia
     </div>
     
       <script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
-      <script src="../assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"search.result.none": "Nenhum resultado encontrado", "search.result.one": "1 resultado encontrado", "search.result.other": "# resultados encontrados", "search.config.separator": "[\\s\\-]+", "search.config.lang": "pt", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "search.result.placeholder": "Digite para iniciar a busca", "search.config.pipeline": "trimmer, stopWordFilter"}</script>
+      <script src="../assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "search.config.lang": "pt", "search.result.one": "1 resultado encontrado", "search.config.separator": "[\\s\\-]+", "search.result.other": "# resultados encontrados", "search.result.none": "Nenhum resultado encontrado", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.placeholder": "Digite para iniciar a busca"}</script>
       
       <script>
         app = initialize({
