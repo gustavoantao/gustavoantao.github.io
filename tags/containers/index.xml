@@ -1,0 +1,19 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>containers - Tag - Gustavo Antão WebSite</title>
+        <link>https://gustavoantao.github.io/tags/containers/</link>
+        <description>containers - Tag - Gustavo Antão WebSite</description>
+        <generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Tue, 10 Nov 2020 13:33:17 -0300</lastBuildDate><atom:link href="https://gustavoantao.github.io/tags/containers/" rel="self" type="application/rss+xml" /><item>
+    <title>Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação</title>
+    <link>https://gustavoantao.github.io/2020/11/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o/</link>
+    <pubDate>Tue, 10 Nov 2020 13:33:17 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/2020/11/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/assets/build.jpeg" referrerpolicy="no-referrer">
+            </div>Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação Este é o primeiro de 3 artigos que pretendo escrever e nele quero compartilhar um pouco sobre a construção de imagens otimizadas utilizando o Builder Pattern.
+Parte 2 - Criando os arquivos de manifesto da Aplicação (Kubernetes)
+Parte 3 - Criando uma pipeline para o deploy com Gitlab-CI
+Por que PHP? O artigo poderia ser escrito utilizando qualquer outra tecnologia como Golang, Python, Java, Node, etc… A escolha pelo PHP se dá por 2 motivos.]]></description>
+</item></channel>
+</rss>

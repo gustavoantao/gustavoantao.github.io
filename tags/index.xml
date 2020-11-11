@@ -1,0 +1,63 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Tags - Tag - Gustavo Antão WebSite</title>
+        <link>https://gustavoantao.github.io/tags/</link>
+        <description>Tags - Tag - Gustavo Antão WebSite</description>
+        <generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Tue, 10 Nov 2020 13:33:17 -0300</lastBuildDate><atom:link href="https://gustavoantao.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>containers</title>
+    <link>https://gustavoantao.github.io/tags/containers/</link>
+    <pubDate>Tue, 10 Nov 2020 13:33:17 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/containers/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>docker</title>
+    <link>https://gustavoantao.github.io/tags/docker/</link>
+    <pubDate>Tue, 10 Nov 2020 13:33:17 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/docker/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>gitlab</title>
+    <link>https://gustavoantao.github.io/tags/gitlab/</link>
+    <pubDate>Tue, 10 Nov 2020 13:33:17 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/gitlab/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>kubernetes</title>
+    <link>https://gustavoantao.github.io/tags/kubernetes/</link>
+    <pubDate>Tue, 10 Nov 2020 13:33:17 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/kubernetes/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>dicas</title>
+    <link>https://gustavoantao.github.io/tags/dicas/</link>
+    <pubDate>Mon, 09 Nov 2020 13:48:43 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/dicas/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>vim</title>
+    <link>https://gustavoantao.github.io/tags/vim/</link>
+    <pubDate>Mon, 09 Nov 2020 13:48:43 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/vim/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>bash</title>
+    <link>https://gustavoantao.github.io/tags/bash/</link>
+    <pubDate>Sun, 08 Nov 2020 13:49:20 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/bash/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>shell</title>
+    <link>https://gustavoantao.github.io/tags/shell/</link>
+    <pubDate>Sun, 08 Nov 2020 13:49:20 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/tags/shell/</guid>
+    <description><![CDATA[]]></description>
+</item></channel>
+</rss>

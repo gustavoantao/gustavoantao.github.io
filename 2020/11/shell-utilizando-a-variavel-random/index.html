@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Shell Utilizando a Variavel Random - Gustavo Antão WebSite</title><meta name="Description" content=""><meta property="og:title" content="Shell Utilizando a Variavel Random" />
+<meta property="og:description" content="Variável RANDOM Umas das coisas que ajuda muito na administração de servidores é ter um conhecimento razoável de programação para a criação de scripts.
+No Linux, o interpretador de comandos bash já fornece as ferramentas necessárias para a construção de scripts que ajudarão o dia-a-dia da administração do sistema. Dessa forma pretendo iniciar alguns posts com algumas dicas de scripts, a começar com a variável de ambiente RANDOM. Com esta variável é possivel gerar um valor inteiro aleatório de 0 até 32767." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gustavoantao.github.io/2020/11/shell-utilizando-a-variavel-random/" />
+<meta property="article:published_time" content="2020-11-10T13:49:20-03:00" />
+<meta property="article:modified_time" content="2020-11-10T13:49:20-03:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Shell Utilizando a Variavel Random"/>
+<meta name="twitter:description" content="Variável RANDOM Umas das coisas que ajuda muito na administração de servidores é ter um conhecimento razoável de programação para a criação de scripts.
+No Linux, o interpretador de comandos bash já fornece as ferramentas necessárias para a construção de scripts que ajudarão o dia-a-dia da administração do sistema. Dessa forma pretendo iniciar alguns posts com algumas dicas de scripts, a começar com a variável de ambiente RANDOM. Com esta variável é possivel gerar um valor inteiro aleatório de 0 até 32767."/>
+<meta name="application-name" content="Gustavo Antão WebSite">
+<meta name="apple-mobile-web-app-title" content="Gustavo Antão WebSite"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://gustavoantao.github.io/2020/11/shell-utilizando-a-variavel-random/" /><link rel="prev" href="https://gustavoantao.github.io/2020/11/substituicao-de-strings-no-vim/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Shell Utilizando a Variavel Random",
+        "inLanguage": "pt-br",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/gustavoantao.github.io\/2020\/11\/shell-utilizando-a-variavel-random\/"
+        },"genre": "posts","wordcount":  248 ,
+        "url": "https:\/\/gustavoantao.github.io\/2020\/11\/shell-utilizando-a-variavel-random\/","datePublished": "2020-11-10T13:49:20-03:00","dateModified": "2020-11-10T13:49:20-03:00","publisher": {
+            "@type": "Organization",
+            "name": "Autor"},"author": {
+                "@type": "Person",
+                "name": "Autor"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gustavo Antão WebSite">Gustavo Antão WebSite</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Trocar tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gustavo Antão WebSite">Gustavo Antão WebSite</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Trocar tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Conteúdos</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Shell Utilizando a Variavel Random</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Autor</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-10">2020-11-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;248 palavras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;2 minutos&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Conteúdos</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#variável-random">Variável RANDOM</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="variável-random">Variável RANDOM</h2>
+<p>Umas das coisas que ajuda muito na administração de servidores é ter um conhecimento razoável de programação para a criação de scripts.</p>
+<p>No Linux, o interpretador de comandos bash já fornece as ferramentas necessárias para a construção de scripts que ajudarão o dia-a-dia da administração do sistema. Dessa forma pretendo iniciar alguns posts com algumas dicas de scripts, a começar com a variável de ambiente RANDOM.
+Com esta variável é possivel gerar um valor inteiro aleatório de 0 até 32767.</p>
+<p>Isto pode ser muito útil por exemplo para gerar senhas numéricas randomicas:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">user@maquina:~$ <span class="k">for</span> i in <span class="sb">`</span>seq <span class="m">1</span> 8<span class="sb">`</span><span class="p">;</span><span class="k">do</span> <span class="nv">c</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$RANDOM</span><span class="p">|</span>cut -c1<span class="sb">`</span><span class="p">;</span><span class="nb">echo</span> -n <span class="nv">$c</span><span class="p">;</span><span class="k">done</span><span class="p">;</span><span class="nb">echo</span>
+</code></pre></div><p>Ou para um propósito menos sério que a administração do sistema você pode fazer um script que gere jogos da mega-sena 😀 :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nv">TOTAL</span><span class="o">=</span>10<span class="p">;</span>  <span class="c1"># Qtde de jogos</span>
+<span class="nv">DEZENAS</span><span class="o">=</span>6<span class="p">;</span> <span class="c1"># Dezenas a serem geradas</span>
+<span class="nv">MAX</span><span class="o">=</span>60<span class="p">;</span>    <span class="c1"># Maior numero possivel no jogo</span>
+<span class="nv">MIN</span><span class="o">=</span>1<span class="p">;</span>     <span class="c1"># Menor numero possivel no jogo</span>
+
+<span class="k">for</span> seq_jogos in <span class="sb">`</span>seq <span class="m">1</span> <span class="nv">$TOTAL</span><span class="sb">`</span><span class="p">;</span>
+<span class="k">do</span>
+        <span class="k">for</span> seq_dezenas in <span class="sb">`</span>seq <span class="m">1</span> <span class="nv">$DEZENAS</span><span class="sb">`</span><span class="p">;</span>
+        <span class="k">do</span>
+                <span class="k">while</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$valido</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s2">&#34;OK&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="c1"># Roda até aparecer um número válido</span>
+                <span class="k">do</span>
+                        <span class="nv">dezena</span><span class="o">=</span><span class="nv">$RANDOM</span><span class="p">;</span>
+                        <span class="k">if</span> <span class="o">[</span> <span class="nv">$dezena</span> -ge <span class="nv">$MIN</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="nv">$dezena</span> -le <span class="nv">$MAX</span> <span class="o">]</span><span class="p">;</span>
+                        <span class="k">then</span>
+                                <span class="c1"># Garantindo que o número não vai se repetir</span>
+                                <span class="c1"># Só atribui  o valor de dezena na variável jogo se esse valor não estiver contido nela.</span>
+                                <span class="nb">echo</span> <span class="nv">$jogo</span><span class="p">|</span>grep -w <span class="nv">$dezena</span> &gt;/dev/null<span class="o">||</span> <span class="nv">jogo</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$jogo</span><span class="s2"> </span><span class="nv">$dezena</span><span class="s2">&#34;</span><span class="p">;</span>
+                                <span class="nv">valido</span><span class="o">=</span><span class="s2">&#34;OK&#34;</span><span class="p">;</span>
+                        <span class="k">fi</span>
+                <span class="k">done</span>
+                <span class="nv">valido</span><span class="o">=</span><span class="s2">&#34;&#34;</span><span class="p">;</span>
+        <span class="k">done</span>
+        <span class="nb">echo</span> <span class="s2">&#34;Jogo </span><span class="nv">$seq_jogos</span><span class="s2">: </span><span class="nv">$jogo</span><span class="s2">&#34;</span><span class="p">;</span>
+        <span class="nv">jogo</span><span class="o">=</span><span class="s2">&#34;&#34;</span><span class="p">;</span>
+<span class="k">done</span>
+</code></pre></div><p>Um abraço a todos e até a próxima!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Atualizado em 2020-11-10</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Voltar</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/11/substituicao-de-strings-no-vim/" class="prev" rel="prev" title="Substituicao De Strings No Vim"><i class="fas fa-angle-left fa-fw"></i>Substituicao De Strings No Vim</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Movido a <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.68.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Voltar ao topo">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentários">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar para a área de transferência","maxShownLines":10},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

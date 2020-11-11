@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Substituicao De Strings No Vim - Gustavo Antão WebSite</title><meta name="Description" content=""><meta property="og:title" content="Substituicao De Strings No Vim" />
+<meta property="og:description" content="Substituição de Caracteres/Palavras Algo que ajuda bastante na administração de servidores *nix é saber usar bem o editor vi. O vi ou vim é um dos mais populares editores do mundo unix e pode ser encontrado em quase todos os SO’s unix based.
+Uma tarefa muito chata e relativamente frequênte na adm. de servidores é a edição de arquivos onde temos de substituir várias ocorrências de uma string por outra. Mas esse é um problema de fácil solução com os comandos do vi." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gustavoantao.github.io/2020/11/substituicao-de-strings-no-vim/" />
+<meta property="article:published_time" content="2020-11-10T13:48:43-03:00" />
+<meta property="article:modified_time" content="2020-11-10T13:48:43-03:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Substituicao De Strings No Vim"/>
+<meta name="twitter:description" content="Substituição de Caracteres/Palavras Algo que ajuda bastante na administração de servidores *nix é saber usar bem o editor vi. O vi ou vim é um dos mais populares editores do mundo unix e pode ser encontrado em quase todos os SO’s unix based.
+Uma tarefa muito chata e relativamente frequênte na adm. de servidores é a edição de arquivos onde temos de substituir várias ocorrências de uma string por outra. Mas esse é um problema de fácil solução com os comandos do vi."/>
+<meta name="application-name" content="Gustavo Antão WebSite">
+<meta name="apple-mobile-web-app-title" content="Gustavo Antão WebSite"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://gustavoantao.github.io/2020/11/substituicao-de-strings-no-vim/" /><link rel="prev" href="https://gustavoantao.github.io/2020/11/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o/" /><link rel="next" href="https://gustavoantao.github.io/2020/11/shell-utilizando-a-variavel-random/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Substituicao De Strings No Vim",
+        "inLanguage": "pt-br",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/gustavoantao.github.io\/2020\/11\/substituicao-de-strings-no-vim\/"
+        },"genre": "posts","wordcount":  390 ,
+        "url": "https:\/\/gustavoantao.github.io\/2020\/11\/substituicao-de-strings-no-vim\/","datePublished": "2020-11-10T13:48:43-03:00","dateModified": "2020-11-10T13:48:43-03:00","publisher": {
+            "@type": "Organization",
+            "name": "Autor"},"author": {
+                "@type": "Person",
+                "name": "Autor"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gustavo Antão WebSite">Gustavo Antão WebSite</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Trocar tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gustavo Antão WebSite">Gustavo Antão WebSite</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Trocar tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Conteúdos</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Substituicao De Strings No Vim</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Autor</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-10">2020-11-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;390 palavras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;2 minutos&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Conteúdos</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#substituição-de-caracterespalavras">Substituição de Caracteres/Palavras</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="substituição-de-caracterespalavras">Substituição de Caracteres/Palavras</h2>
+<p>Algo que ajuda bastante na administração de servidores <strong>*nix</strong> é saber usar bem o editor <strong>vi</strong>. O <strong>vi</strong> ou <strong>vim</strong> é um dos mais populares editores do mundo unix e pode ser encontrado em quase todos os SO’s unix based.</p>
+<p>Uma tarefa muito chata e relativamente frequênte na adm. de servidores é a edição de arquivos onde temos de substituir várias ocorrências de uma string por outra. Mas esse é um problema de fácil solução com os comandos do vi.</p>
+<p>Vamos a um exemplo, digamos que temos o arquivo teste.txt com o seguinte conteúdo:</p>
+<pre><code>usuario1@dominioerrado.com
+usuario2@dominioerrado.com
+usuario3@dominioerrado.com
+usuario4@dominioerrado.com
+usuario5@dominioerrado.com
+</code></pre><p>Você notou que numa lista de e-mails o domínio veio errado e precisa corrigir, mas seu arquivo tem mais de 50000 linhas. Quer fazer manualmente? :fontawesome-regular-laugh-wink:</p>
+<p>Com o arquivo aberto no vi digite a sequência de comandos:</p>
+<pre><code>[ESC] : (Tecla ESC em seguida o dois-pontos )
+</code></pre><p>Isso fará com que o editor entre no modo de comandos, a seguir digite:</p>
+<pre><code>%s/dominioerrado/dominiocorreto/g
+</code></pre><p>Pressione ENTER. O resultado será que todas as ocorrências de dominioerrado serão substituídas por dominiocorreto, isto porque o sinal <em>%</em> no começo  indica que o comando será executado desde a 1ª linha do arquivo, em seguida o <em>s</em> indica que será um comando de substituição, as strings entre <em>/</em> são a string original e a nova string respectivamente e o <em>g</em> no final indica que o comando não parará sua execução ao encontrar a 1ª ocorrência, fazendo com que a substituição ocorra do inicio ao fim do arquivo.</p>
+<p>Uma outra utilização frequente deste mesmo comando é quando abrimos no vi um arquivo criado em um ambiente Windows e em cada quebra de linha existe um <strong>^M</strong>.
+Porém neste caso em específico há uma diferença pois embora apresentado com 2 simbolos o ^M é identificado pelo vi como apenas 1 caracter, ou seja se vc tentar fazer a substituição digitando no campo da string original o caracter ^ seguido de M o comando não funcionará.</p>
+<p>Para remover estes caracteres especiais você deve digitar:</p>
+<pre><code>[ESC]:
+
+%s/[CTRL]v[CTRL]m//g
+</code></pre><p>Para que o caracter ^M seja compreendido pelo editor você deverá digitar a sequência <code>[CTRL]+v+[CTRL]+M</code> e mantendo o segundo campo string vazio todas as ocorrências do caracter serão removidas.</p>
+<p>Obviamente existem outras maneiras de se conseguir o mesmo resultado via linha de comando (sed&hellip; coff&hellip; coff&hellip;) mas essa fica pra uma próxima.</p>
+<p>Abraços!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Atualizado em 2020-11-10</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Voltar</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/11/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o/" class="prev" rel="prev" title="Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação"><i class="fas fa-angle-left fa-fw"></i>Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação</a>
+            <a href="/2020/11/shell-utilizando-a-variavel-random/" class="next" rel="next" title="Shell Utilizando a Variavel Random">Shell Utilizando a Variavel Random<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Movido a <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.68.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Voltar ao topo">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentários">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar para a área de transferência","maxShownLines":10},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

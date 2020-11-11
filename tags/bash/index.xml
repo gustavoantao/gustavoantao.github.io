@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>bash - Tag - Gustavo Antão WebSite</title>
+        <link>https://gustavoantao.github.io/tags/bash/</link>
+        <description>bash - Tag - Gustavo Antão WebSite</description>
+        <generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Sun, 08 Nov 2020 13:49:20 -0300</lastBuildDate><atom:link href="https://gustavoantao.github.io/tags/bash/" rel="self" type="application/rss+xml" /><item>
+    <title>Shell Utilizando a Variável Random</title>
+    <link>https://gustavoantao.github.io/2020/11/shell-utilizando-a-vari%C3%A1vel-random/</link>
+    <pubDate>Sun, 08 Nov 2020 13:49:20 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/2020/11/shell-utilizando-a-vari%C3%A1vel-random/</guid>
+    <description><![CDATA[Variável RANDOM Umas das coisas que ajuda muito na administração de servidores é ter um conhecimento razoável de programação para a criação de scripts.
+No Linux, o interpretador de comandos bash já fornece as ferramentas necessárias para a construção de scripts que ajudarão o dia-a-dia da administração do sistema. Dessa forma pretendo iniciar alguns posts com algumas dicas de scripts, a começar com a variável de ambiente RANDOM. Com esta variável é possivel gerar um valor inteiro aleatório de 0 até 32767.]]></description>
+</item></channel>
+</rss>

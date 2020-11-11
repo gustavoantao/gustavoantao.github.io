@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>vim - Tag - Gustavo Antão WebSite</title>
+        <link>https://gustavoantao.github.io/tags/vim/</link>
+        <description>vim - Tag - Gustavo Antão WebSite</description>
+        <generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Mon, 09 Nov 2020 13:48:43 -0300</lastBuildDate><atom:link href="https://gustavoantao.github.io/tags/vim/" rel="self" type="application/rss+xml" /><item>
+    <title>Substituição De Strings No Vim</title>
+    <link>https://gustavoantao.github.io/2020/11/substitui%C3%A7%C3%A3o-de-strings-no-vim/</link>
+    <pubDate>Mon, 09 Nov 2020 13:48:43 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://gustavoantao.github.io/2020/11/substitui%C3%A7%C3%A3o-de-strings-no-vim/</guid>
+    <description><![CDATA[Substituição de Caracteres/Palavras Algo que ajuda bastante na administração de servidores *nix é saber usar bem o editor vi. O vi ou vim é um dos mais populares editores do mundo unix e pode ser encontrado em quase todos os SO’s unix based.
+Uma tarefa muito chata e relativamente frequênte na adm. de servidores é a edição de arquivos onde temos de substituir várias ocorrências de uma string por outra. Mas esse é um problema de fácil solução com os comandos do vi.]]></description>
+</item></channel>
+</rss>

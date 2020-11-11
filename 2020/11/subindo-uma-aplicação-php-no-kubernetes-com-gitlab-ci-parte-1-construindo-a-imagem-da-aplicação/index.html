@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação - Gustavo Antão WebSite</title><meta name="Description" content=""><meta property="og:title" content="Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação" />
+<meta property="og:description" content="Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação Este é o primeiro de 3 artigos que pretendo escrever e nele quero compartilhar um pouco sobre a construção de imagens otimizadas utilizando o Builder Pattern.
+Parte 2 - Criando os arquivos de manifesto da Aplicação (Kubernetes)
+Parte 3 - Criando uma pipeline para o deploy com Gitlab-CI
+Por que PHP? O artigo poderia ser escrito utilizando qualquer outra tecnologia como Golang, Python, Java, Node, etc… A escolha pelo PHP se dá por 2 motivos." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gustavoantao.github.io/2020/11/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o/" />
+<meta property="article:published_time" content="2020-11-10T13:33:17-03:00" />
+<meta property="article:modified_time" content="2020-11-10T13:33:17-03:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação"/>
+<meta name="twitter:description" content="Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação Este é o primeiro de 3 artigos que pretendo escrever e nele quero compartilhar um pouco sobre a construção de imagens otimizadas utilizando o Builder Pattern.
+Parte 2 - Criando os arquivos de manifesto da Aplicação (Kubernetes)
+Parte 3 - Criando uma pipeline para o deploy com Gitlab-CI
+Por que PHP? O artigo poderia ser escrito utilizando qualquer outra tecnologia como Golang, Python, Java, Node, etc… A escolha pelo PHP se dá por 2 motivos."/>
+<meta name="application-name" content="Gustavo Antão WebSite">
+<meta name="apple-mobile-web-app-title" content="Gustavo Antão WebSite"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://gustavoantao.github.io/2020/11/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o/" /><link rel="prev" href="https://gustavoantao.github.io/2020/11/substitui%C3%A7%C3%A3o-de-strings-no-vim/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação",
+        "inLanguage": "pt-br",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/gustavoantao.github.io\/2020\/11\/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o\/"
+        },"genre": "posts","keywords": "containers, kubernetes, gitlab, docker","wordcount":  2158 ,
+        "url": "https:\/\/gustavoantao.github.io\/2020\/11\/subindo-uma-aplica%C3%A7%C3%A3o-php-no-kubernetes-com-gitlab-ci-parte-1-construindo-a-imagem-da-aplica%C3%A7%C3%A3o\/","datePublished": "2020-11-10T13:33:17-03:00","dateModified": "2020-11-10T13:33:17-03:00","publisher": {
+            "@type": "Organization",
+            "name": "Gustavo Antão"},"author": {
+                "@type": "Person",
+                "name": "Gustavo Antão"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gustavo Antão WebSite">Gustavo Antão WebSite</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Trocar tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gustavo Antão WebSite">Gustavo Antão WebSite</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Trocar tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Conteúdos</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Gustavo Antão</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="10/11/2020">10/11/2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2158 palavras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;11 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/build.jpeg"
+        data-srcset="https://gustavoantao.github.io/assets/build.jpeg, https://gustavoantao.github.io/assets/build.jpeg 1.5x, https://gustavoantao.github.io/assets/build.jpeg 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/build.jpeg"
+        title="https://gustavoantao.github.io/assets/build.jpeg" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Conteúdos</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#por-que-php">Por que PHP?</a></li>
+    <li><a href="#antes-de-começar">Antes de começar</a></li>
+    <li><a href="#o-problema-de-utilizar-uma-imagem-padrão">O problema de utilizar uma imagem padrão</a></li>
+    <li><a href="#diferença-de-tamanho-entre-as-imagens-oficiais">Diferença de tamanho entre as imagens oficiais</a></li>
+    <li><a href="#builder-pattern">Builder Pattern</a></li>
+    <li><a href="#conclusão">Conclusão</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="subindo-uma-aplicação-php-no-kubernetes-com-gitlab-ci---parte-1---construindo-a-imagem-da-aplicação">Subindo uma aplicação PHP no Kubernetes com Gitlab-CI - Parte 1 - Construindo a imagem da aplicação</h1>
+<p>Este é o primeiro de 3 artigos que pretendo escrever e nele quero compartilhar um pouco sobre a construção de imagens otimizadas utilizando o Builder Pattern.</p>
+<p><strong>Parte 2 - Criando os arquivos de manifesto da Aplicação (Kubernetes)</strong></p>
+<p><strong>Parte 3 - Criando uma pipeline para o deploy com Gitlab-CI</strong></p>
+<h2 id="por-que-php">Por que PHP?</h2>
+<p>O artigo poderia ser escrito utilizando qualquer outra tecnologia como Golang, Python, Java, Node, etc… A escolha pelo PHP se dá por 2 motivos. O primeiro e mais óbvio é porque é a tecnologia que utilizo no dia-a-dia, no trabalho e tenho mais afinidade. O segundo motivo foi uma das razões que me levaram à escrever o artigo, justamente a menor quantidade de artigos e exemplos utilizando PHP. Durante meus estudos notei que era mais fácil encontrar informações sobre outras tecnologias sendo “deployadas” (se me permitem o neologismo) no Kubernetes do que PHP, por isso a escolha por ele.</p>
+<h2 id="antes-de-começar">Antes de começar</h2>
+<p>Se você está lendo este artigo eu presumo que já esteja familiarizado com a utilização de containers com Docker, caso este não seja o seu caso eu sugiro fortemente que você assista a série “<a href="https://www.youtube.com/watch?v=0cDj7citEjE&amp;list=PLf-O3X2-mxDk1MnJsejJwqcrDC5kDtXEb" target="_blank" rel="noopener noreffer">Descomplicando Docker</a>” do canal LinuxTips.</p>
+<p>É importante antes de seguir lendo o artigo que você se familiarize com o conceito de imagens do Docker.</p>
+<p>Se você já tem conhecimento sobre utilização de containers com Docker, abaixo eu vou demonstrar uma forma de construir imagens menores para sua aplicação utilizando uma boa prática para criação de containers chamada Builder Pattern. Para saber um pouco mais sobre a técnica, vale a pena assistir <a href="https://www.youtube.com/watch?v=wGz_cbtCiEA" target="_blank" rel="noopener noreffer">este vídeo</a> do Sandeep Dinesh do Google. Aliás, recomendo assistir a toda série “<a href="https://www.youtube.com/watch?v=wGz_cbtCiEA&amp;list=PLIivdWyY5sqL3xfXz5xJvwzFW_tlQB_GB" target="_blank" rel="noopener noreffer">Kubernetes Best Practices</a>” apresentada por ele.
+Agora, sem mais delongas vamos ao que interessa</p>
+<h2 id="o-problema-de-utilizar-uma-imagem-padrão">O problema de utilizar uma imagem padrão</h2>
+<p>Primeiramente precisamos entender qual é a necessidade de criar imagens otimizadas sendo que seria muito mais fácil utilizar as imagens padrão encontradas no Docker Hub.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/la_vem_historia.jpg"
+        data-srcset="https://gustavoantao.github.io/assets/la_vem_historia.jpg, https://gustavoantao.github.io/assets/la_vem_historia.jpg 1.5x, https://gustavoantao.github.io/assets/la_vem_historia.jpg 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/la_vem_historia.jpg"
+        title="Senta que lá vem a história" /></p>
+<p>Qual é o problema disso? Bem, vamos criar uma situação hipotética onde você tem um cluster Kubernetes rodando sua principal aplicação. Seu software é uma plataforma de comércio eletrônico rodando milhares de lojas de diversos tamanhos, desde pequenas lojas com 40 a 50 produtos até grandes lojas com milhares de produtos e vendendo milhões de reais por mês.</p>
+<p>Pensar no gerenciamento de escala manual de um ambiente como este já é de arrepiar os cabelos, mas felizmente o Kubernetes nos oferece o autoscaling horizontal de pods e os Cloud Providers em suas soluções gerenciadas de K8s oferecem o autoscaling de worker nodes, permitindo que elasticidade e escalabilidade não sejam problemas. O ambiente naturalmente se estica e diminui automaticamente conforme a carga que recebe, mantendo sua plataforma estável e ao mesmo tempo economizando recursos em períodos de ociosidade. Tudo maravilhoso, cada vez que sobe a quantidade de requests a um nível que a plataforma não vai aguentar o autoscaling sobe novos nodes que baixam a imagem da sua aplicação e provisionam novos pods para atender estas requisições. E é aí que mora o problema! Imagine que seu maior cliente, resolve fazer uma ação de marketing no intervalo do jogo da final da copa e anuncia um desconto de 50% justamente nos itens que ele mais vende. Ah.. ele esqueceu de te informar a respeito.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/meteoro.jpeg"
+        data-srcset="https://gustavoantao.github.io/assets/meteoro.jpeg, https://gustavoantao.github.io/assets/meteoro.jpeg 1.5x, https://gustavoantao.github.io/assets/meteoro.jpeg 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/meteoro.jpeg"
+        title="Meteoro" /></p>
+<p>O resultado será uma avalanche de requisições repentinamente chegando no seu cluster, logicamente que com o crescimento das requests o autoscaling provisionará novos nodes, talvez dezenas, talvez centenas, que terão cada um deles que fazer o download da imagem da sua app antes de provisionar os pods e começar a atender as requisições, é muito provável que durante algum tempo (talvez segundos, talvez minutos) requests sejam perdidas e seu cliente deixará de vender. É uma situação que não o deixará muito contente, lembre-se é seu maior cliente, que investiu pesado em marketing e teve prejuízo ao não conseguir atender a toda demanda que sua ação de marketing conseguiu atrair.</p>
+<p>Utilizando imagens menores para sua app o tempo para subir um novo node será muito reduzido, e se não conseguir evitar 100% situações como a exemplificada acima, certamente vai minimizar muito o impacto.</p>
+<h2 id="diferença-de-tamanho-entre-as-imagens-oficiais">Diferença de tamanho entre as imagens oficiais</h2>
+<p>Vamos primeiramente baixar a imagem oficial do PHP-FPM do Docker Hub:</p>
+<pre><code>$ docker pull php:7.3-fpm
+</code></pre><p>Vamos ver o tamanho da imagem default (baseada no Debian)</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/default_debian.png"
+        data-srcset="https://gustavoantao.github.io/assets/default_debian.png, https://gustavoantao.github.io/assets/default_debian.png 1.5x, https://gustavoantao.github.io/assets/default_debian.png 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/default_debian.png"
+        title="Default Debian" /></p>
+<p>Podemos observar que a imagem padrão, sem adição de nenhuma extensão do PHP possui 398MB de tamanho.</p>
+<p>A imagem default do PHP é baseada no Debian, mas já é bem sabido que utilizar a distro Alpine Linux como base traz uma enorme economia de espaço na imagem e esta é a forma mais simples de se reduzir o tamanho da sua app. Vamos ver qual é o tamanho da imagem PHP-FPM oficial utilizando o Alpine:</p>
+<pre><code>$ docker pull php:7.3-fpm-alpine
+</code></pre><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/default_alpine.png"
+        data-srcset="https://gustavoantao.github.io/assets/default_alpine.png, https://gustavoantao.github.io/assets/default_alpine.png 1.5x, https://gustavoantao.github.io/assets/default_alpine.png 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/default_alpine.png"
+        title="Default Alpine" /></p>
+<p>Como podemos observar a imagem com Alpine tem apenas 74.6MB uma economia de 323.4MB se comparada à imagem Debian. Mas quem trabalha com PHP sabe que para levar uma aplicação à produção será necessário instalar diversas extensões que o PHP possui, seja para conexão com banco de dados, autenticação com LDAP, compactação, manipulação de imagens etc…</p>
+<p>Para termos uma noção eu criei um Dockerfile utilizando a imagem base padrão do PHP-FPM e adicionando algumas extensões que são frequentemente usadas:</p>
+<ul>
+<li>mbstring</li>
+<li>zip</li>
+<li>intl</li>
+<li>gd</li>
+<li>imap</li>
+<li>xml</li>
+<li>mysqli</li>
+<li>json</li>
+<li>bcmath</li>
+<li>bz2</li>
+<li>pdo_mysql</li>
+<li>ldap</li>
+</ul>
+<p>Além dessas extensões deixei a imagem preparada com o composer já instalado para o gerenciamento de dependências da aplicação. Vejamos o Dockerfile dessa imagem:</p>
+<pre><code>FROM php:7.3-fpm
+
+RUN apt-get update &amp;&amp; apt-get upgrade
+
+# PHP MBSTRING
+RUN docker-php-ext-install mbstring
+
+# PHP-ZIP
+RUN apt-get install zlib1g-dev libzip-dev -y
+RUN docker-php-ext-install zip
+
+# PHP-INTL
+RUN apt-get install icu-devtools libicu-dev
+RUN docker-php-ext-configure intl &amp;&amp; docker-php-ext-install intl
+
+# PHP-GD
+RUN apt-get install libpng-dev -y
+RUN docker-php-ext-configure gd &amp;&amp; docker-php-ext-install gd
+
+# PHP-IMAP
+RUN apt-get install libc-client-dev libkrb5-dev -y
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl &amp;&amp; docker-php-ext-install imap
+
+# PHP-XML
+RUN apt-get install libxml2-dev
+RUN docker-php-ext-configure xml &amp;&amp; docker-php-ext-install xml
+
+# PHP-MYSQLi
+RUN docker-php-ext-configure mysqli &amp;&amp; docker-php-ext-install mysqli
+
+# PHP-JSON
+RUN docker-php-ext-configure json &amp;&amp; docker-php-ext-install json
+
+# PHP-BCMATH
+RUN docker-php-ext-configure bcmath &amp;&amp; docker-php-ext-install bcmath
+
+# PHP-BZ2
+RUN apt-get install libbz2-dev -y
+RUN docker-php-ext-configure bz2 &amp;&amp; docker-php-ext-install bz2
+
+# PHP-PDO
+RUN docker-php-ext-configure pdo &amp;&amp; docker-php-ext-install pdo
+RUN docker-php-ext-configure pdo_mysql &amp;&amp; docker-php-ext-install pdo_mysql
+
+# PHP-LDAP
+RUN apt-get install libldap2-dev
+RUN docker-php-ext-configure ldap &amp;&amp; docker-php-ext-install ldap
+
+# Instalando o composer
+RUN php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot; &amp;&amp; \
+php composer-setup.php &amp;&amp; \
+php -r &quot;unlink('composer-setup.php');&quot; &amp;&amp; \
+mv composer.phar /usr/local/bin/composer &amp;&amp; \
+/usr/local/bin/composer global require hirak/prestissimo
+</code></pre><p>Para <em>“buildar”</em> esse Dockerfile executamos:</p>
+<pre><code>$ docker build -t php7.3-ext-debian .
+</code></pre><p>Vejamos com que tamanho essa imagem ficou agora:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/ext_debian.png"
+        data-srcset="https://gustavoantao.github.io/assets/ext_debian.png, https://gustavoantao.github.io/assets/ext_debian.png 1.5x, https://gustavoantao.github.io/assets/ext_debian.png 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/ext_debian.png"
+        title="Ext Debian" /></p>
+<p>São 126MB à mais na imagem oficial Debian após a adição das extensões, qual será o resultado dessas adições na imagem alpine? O Dockerfile Alpine ficou assim:</p>
+<pre><code>FROM php:7.3-fpm-alpine
+
+RUN apk add --update php libstdc++
+
+# PHP MBSTRING
+RUN docker-php-ext-install mbstring
+
+# PHP-ZIP
+RUN apk add --update zlib-dev libzip-dev
+RUN docker-php-ext-install zip
+
+# PHP-INTL
+RUN apk add --update icu-dev php7-intl
+RUN docker-php-ext-configure intl &amp;&amp; docker-php-ext-install intl
+
+# PHP-GD
+RUN apk add --update libgd libpng-dev
+RUN docker-php-ext-configure gd &amp;&amp; docker-php-ext-install gd
+
+# PHP-IMAP
+RUN apk add --update imap-dev
+RUN docker-php-ext-configure imap &amp;&amp; docker-php-ext-install imap
+
+# PHP-XML
+RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing libxml++-dev
+RUN docker-php-ext-configure xml &amp;&amp; docker-php-ext-install xml
+
+# PHP-MYSQLi
+RUN docker-php-ext-configure mysqli &amp;&amp; docker-php-ext-install mysqli
+
+# PHP-JSON
+RUN docker-php-ext-configure json &amp;&amp; docker-php-ext-install json
+
+# PHP-BCMATH
+RUN docker-php-ext-configure bcmath &amp;&amp; docker-php-ext-install bcmath
+
+# PHP-BZ2
+RUN docker-php-ext-configure bz2 &amp;&amp; docker-php-ext-install bz2
+
+# PHP-PDO
+RUN docker-php-ext-configure pdo &amp;&amp; docker-php-ext-install pdo
+RUN docker-php-ext-configure pdo_mysql &amp;&amp; docker-php-ext-install pdo_mysql
+
+# PHP-LDAP
+RUN apk add --update openldap-dev
+RUN docker-php-ext-configure ldap &amp;&amp; docker-php-ext-install ldap
+
+# Instalando o composer
+RUN php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot; &amp;&amp; \
+php composer-setup.php &amp;&amp; \
+php -r &quot;unlink('composer-setup.php');&quot; &amp;&amp; \
+mv composer.phar /usr/local/bin/composer &amp;&amp; \
+/usr/local/bin/composer global require hirak/prestissimo
+</code></pre><p>E o resultado:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/ext_alpine.png"
+        data-srcset="https://gustavoantao.github.io/assets/ext_alpine.png, https://gustavoantao.github.io/assets/ext_alpine.png 1.5x, https://gustavoantao.github.io/assets/ext_alpine.png 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/ext_alpine.png"
+        title="Ext Alpine" /></p>
+<p>Com 304MB a imagem está muito maior que que a imagem original Alpine mas ainda 220MB menor que a imagem Debian com as extensões e ainda consegue ser menor que a imagem Debian original.</p>
+<p>Mas é possível fazer melhor, como disse no início do artigo, ao utilizarmos o Builder Pattern para a criação das imagens podemos economizar ainda mais espaço em disco.</p>
+<h2 id="builder-pattern">Builder Pattern</h2>
+<p>Mas o que cargas d’água vem a ser esse tal padrão?</p>
+<p>Bem, ao realizarmos as instalações das extensões (ou a compilação para o caso de linguagens compiladas) o sistema baixa diversas bibliotecas e dependências que somente serão utilizadas durante a instalação, inflando a imagem com arquivos que serão desnecessários para o funcionamento da aplicação. O Docker oferece um recurso chamado de multi-stage build, que nos permite fazer toda a geração de dependências em uma imagem temporária e em seguida copiar apenas os arquivos que interessam para a imagem final, tornando-a muito menor. Este é o <strong>Builder Pattern</strong>.</p>
+<p><strong>Mas como fazemos isso?</strong></p>
+<p>Um Dockerfile normalmente possui uma instrução FROM que determina qual será a imagem base utilizada seguida das outras instruções para construção da imagem (COPY, RUN, CMD, etc).</p>
+<p>No caso do Builder Pattern utiliza-se um ou mais comandos FROM pra gerar as dependências que posteriormente serão copiadas para a imagem final.</p>
+<p>Veja o exemplo:</p>
+<pre><code>###############################################################################
+# Imagem PHP-7.3 otimizada para uso no cluster
+# Multi-stage build (builder pattern)
+# Primeiro realiza o build das extensões necessárias
+
+FROM php:7.3-fpm-alpine AS extensions_source
+
+ENV EXT_DIR=/usr/src/php/ext
+RUN mkdir -p ${EXT_DIR}
+
+RUN apk add --update php libstdc++
+
+# PHP MBSTRING
+RUN docker-php-ext-install mbstring
+
+# PHP-ZIP
+RUN apk add --update zlib-dev libzip-dev
+RUN docker-php-ext-install zip
+
+# PHP-INTL
+RUN apk add --update icu-dev php7-intl
+RUN docker-php-ext-configure intl &amp;&amp; docker-php-ext-install intl
+
+# PHP-GD
+RUN apk add --update libgd libpng-dev
+RUN docker-php-ext-configure gd &amp;&amp; docker-php-ext-install gd
+
+# PHP-IMAP
+RUN apk add --update imap-dev
+RUN docker-php-ext-configure imap &amp;&amp; docker-php-ext-install imap
+
+# PHP-XML
+RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing libxml++-dev
+RUN docker-php-ext-configure xml &amp;&amp; docker-php-ext-install xml
+
+# PHP-MYSQLi
+RUN docker-php-ext-configure mysqli &amp;&amp; docker-php-ext-install mysqli
+
+# PHP-JSON
+RUN docker-php-ext-configure json &amp;&amp; docker-php-ext-install json
+
+# PHP-BCMATH
+RUN docker-php-ext-configure bcmath &amp;&amp; docker-php-ext-install bcmath
+
+# PHP-BZ2
+RUN docker-php-ext-configure bz2 &amp;&amp; docker-php-ext-install bz2
+
+# PHP-PDO
+RUN docker-php-ext-configure pdo &amp;&amp; docker-php-ext-install pdo
+RUN docker-php-ext-configure pdo_mysql &amp;&amp; docker-php-ext-install pdo_mysql
+
+# PHP-LDAP
+RUN apk add --update openldap-dev
+RUN docker-php-ext-configure ldap &amp;&amp; docker-php-ext-install ldap
+
+# Estágio 2
+# Faz o build da imagem limpa, apenas copiando os arquivos necessários da imagem temporária
+
+FROM php:7.3-fpm-alpine
+
+ENV EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20180731/
+ENV LIB_DIR=/usr/lib
+
+COPY --from=extensions_source \
+${EXT_DIR}/mbstring.so \
+${EXT_DIR}/zip.so \
+${EXT_DIR}/intl.so \
+${EXT_DIR}/gd.so \
+${EXT_DIR}/imap.so \
+${EXT_DIR}/xml.so \
+${EXT_DIR}/mysqli.so \
+${EXT_DIR}/json.so \
+${EXT_DIR}/bcmath.so \
+${EXT_DIR}/bz2.so \
+${EXT_DIR}/pdo.so \
+${EXT_DIR}/pdo_mysql.so \
+${EXT_DIR}/ldap.so ${EXT_DIR}/
+
+RUN ln -s ${LIB_DIR}/libzip.so ${LIB_DIR}/libzip.so.5 \
+&amp;&amp; ln -s ${LIB_DIR}/libcrypto.so.1.1 ${LIB_DIR}/libcrypto.so \
+&amp;&amp; ln -s ${LIB_DIR}/libssl.so.1.1 ${LIB_DIR}/libssl.so \
+&amp;&amp; ln -s ${LIB_DIR}/libbz2.so ${LIB_DIR}/libbz2.so.1 \
+&amp;&amp; ln -s ${LIB_DIR}/libicuio.so ${LIB_DIR}/libicuio.so.64 \
+&amp;&amp; ln -s ${LIB_DIR}/libicui18n.so ${LIB_DIR}/libicui18n.so.64 \
+&amp;&amp; ln -s ${LIB_DIR}/libicuuc.so ${LIB_DIR}/libicuuc.so.64 \
+&amp;&amp; ln -s ${LIB_DIR}/libicudata.so ${LIB_DIR}/libicudata.so.64 \
+&amp;&amp; ln -s ${LIB_DIR}/libldap.so ${LIB_DIR}/libldap-2.4.so.2 \
+&amp;&amp; ln -s ${LIB_DIR}/liblber.so ${LIB_DIR}/liblber-2.4.so.2 \
+&amp;&amp; ln -s ${LIB_DIR}/libsasl2.so ${LIB_DIR}/libsasl2.so.3 \
+&amp;&amp; ln -s ${LIB_DIR}/libpng.so ${LIB_DIR}/libpng16.so \
+&amp;&amp; ln -s ${LIB_DIR}/libpng.so ${LIB_DIR}/libpng16.so.16 \
+&amp;&amp; ln -s ${LIB_DIR}/libc-client.so ${LIB_DIR}/libc-client.so.1
+
+COPY --from=extensions_source \
+${LIB_DIR}/libzip.so \
+${LIB_DIR}/../../lib/libcrypto.so.1.1 \
+${LIB_DIR}/../../lib/libssl.so.1.1 \
+${LIB_DIR}/libstdc* \
+${LIB_DIR}/libicudata.so \
+${LIB_DIR}/libicui18n.so \
+${LIB_DIR}/libicuio.so \
+${LIB_DIR}/libicutest.so \
+${LIB_DIR}/libicutu.so \
+${LIB_DIR}/libicuuc.so \
+${LIB_DIR}/libgcc_s.so.1 \
+${LIB_DIR}/libpng.so \
+${LIB_DIR}/libc-client.so \
+${LIB_DIR}/libbz2.so \
+${LIB_DIR}/libldap.so \
+${LIB_DIR}/libldap_r-2.4.so.2 \
+${LIB_DIR}/libldap_r.so \
+${LIB_DIR}/liblber.so \
+${LIB_DIR}/libsasl2.so ${LIB_DIR}/
+
+RUN docker-php-ext-enable zip mbstring intl gd imap xml mysqli json bcmath \
+bz2 pdo pdo_mysql ldap
+
+# Refaço a cópia pois o comando docker-php-ext-enable faz purge de algumas libs
+COPY --from=extensions_source ${LIB_DIR}/libstdc* ${LIB_DIR}/libgcc_s.so.1 ${LIB_DIR}/
+
+# Instalando o composer
+RUN php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot; &amp;&amp; \
+php composer-setup.php &amp;&amp; \
+php -r &quot;unlink('composer-setup.php');&quot; &amp;&amp; \
+mv composer.phar /usr/local/bin/composer &amp;&amp; \
+/usr/local/bin/composer global require hirak/prestissimo
+
+# Limpando a imagem
+RUN rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/local/lib/php/doc/*
+</code></pre><p>Note que primeiramente eu declaro um FROM e o nomeio utilizando o parametro AS e nesse estágio são realizadas as instalações das extensões necessárias. Concluídas as instalações, é realizada a declaração de um novo FROM que fará o build da imagem final. Neste estágio utilizando o parâmetro COPY &ndash;from=nome_do_estágio é possível referenciar o estágio anterior e copiar apenas os arquivos que nos interessam.
+Adicionalmente, eu adiciono ao final do arquivo um comando para excluir arquivos de cache, temporários e documentação.</p>
+<p>Vejamos o resultado:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gustavoantao.github.io/assets/builder_alpine.png"
+        data-srcset="https://gustavoantao.github.io/assets/builder_alpine.png, https://gustavoantao.github.io/assets/builder_alpine.png 1.5x, https://gustavoantao.github.io/assets/builder_alpine.png 2x"
+        data-sizes="auto"
+        alt="https://gustavoantao.github.io/assets/builder_alpine.png"
+        title="Builder Alpine" /></p>
+<p>A imagem gerada utilizando o Builder Pattern ficou com 156MB.
+São 148MB a menos que a imagem Alpine e 368MB de diferença para a imagem Debian. Uma redução de 70% no tamanho original da imagem Debian com as extensões.</p>
+<h2 id="conclusão">Conclusão</h2>
+<p>Vimos que:</p>
+<ol>
+<li>
+<p>Com o simples fato de optarmos pela distro Alpine Linux na hora de construir nossos containers podemos criar imagens muito mais enxutas;</p>
+</li>
+<li>
+<p>Que com um pouquinho de trabalho, usando o Builder Pattern é possível otimizar ainda mais estas imagens;</p>
+</li>
+<li>
+<p>Quando estamos falando de imagens de container para o Kubernetes, tamanho é sim importante :fontawesome-regular-grin-squint-tears:.</p>
+</li>
+</ol>
+<p>No próximo post, entrarei no mundo do Kubernetes propriamente dito criando os arquivos de manifesto para o deploy de uma app PHP no K8s.</p>
+<p>Até lá!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Atualizado em 10/11/2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/containers/">containers</a>,&nbsp;<a href="/tags/kubernetes/">kubernetes</a>,&nbsp;<a href="/tags/gitlab/">gitlab</a>,&nbsp;<a href="/tags/docker/">docker</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Voltar</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2020/11/substitui%C3%A7%C3%A3o-de-strings-no-vim/" class="prev" rel="prev" title="Substituição De Strings No Vim"><i class="fas fa-angle-left fa-fw"></i>Substituição De Strings No Vim</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Movido a <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.68.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Voltar ao topo">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentários">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar para a área de transferência","maxShownLines":10},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

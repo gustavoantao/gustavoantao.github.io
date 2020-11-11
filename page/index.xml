@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pages on Gustavo Antão WebSite</title>
+    <link>https://gustavoantao.github.io/page/</link>
+    <description>Recent content in Pages on Gustavo Antão WebSite</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>pt-br</language>
+    <lastBuildDate>Tue, 10 Nov 2020 14:43:25 -0300</lastBuildDate>
+    
+	<atom:link href="https://gustavoantao.github.io/page/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Sobre</title>
+      <link>https://gustavoantao.github.io/page/sobre/</link>
+      <pubDate>Tue, 10 Nov 2020 14:43:25 -0300</pubDate>
+      
+      <guid>https://gustavoantao.github.io/page/sobre/</guid>
+      <description>Gustavo Antão {: style=&amp;quot;height:150px&amp;rdquo;} Natural de Marília, interior de SP, iniciei minha carreira em tecnologia em 1998 em um provedor de Internet (na época ZAZ hoje Terra Networks)atuando como suporte técnico. O interesse pela área foi tamanho que em 8 meses de trabalho eu já me interessava por Linux, Networking e desenvolvimento.
+Após saír do provedor, trabalhei em uma consultoria que era representante oficial do Conectiva Linux e durante dois anos consecutivos obtive a Certificação Avançada Conectiva Linux (RIP, sdds :fontawesome-regular-laugh:), pois era necessário para ministrar os treinamentos oficiais.</description>
+    </item>
+    
+  </channel>
+</rss>
